@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {{ title }}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Добавить</button>
+    </form>
+
+    {% if flys %}
+    <table border="1px">
+        <tr>
+            <td>Рейс</td>
+            <td>Цена билета</td>
+            <td>Дата вылета</td>
+            <td>Класс обслуживания</td>
+            <td>Действие</td>
+        </tr>
+        {% for i in flys %}
+        <tr>
+            <td>{{ i.fly_city }}</td>
+            <td>{{ i.price_ticket }}</td>
+            <td>{{ i.date }}</td>
+            <td>{{ i.description }}</td>
+            <td>
+                <form action="delete" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ i.id }}">
+                    <button type="submit">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    Нет данных
+    {% endif %}
+
+    <br>
+
+    <form method="get">
+        Список рейсов с классом обслуживания:
+        <input type="text" name="query" value="{{ query }}">
+        <button type="submit">Поиск</button>
+    </form>
+
+    {% if query %}
+        {% if query_result %}
+            <table border="1px">
+                <tr>
+                    <td>Рейс</td>
+                </tr>
+                {% for i in query_result %}
+                <tr>
+                    <td>{{ i.fly_city }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    {% endif %}
+
+    <br>
+
+    <form method="get">
+        Список рейсов с датой вылета:
+        <input type="date" name="new_date" value="{{ new_date }}">
+        и стоимости билета ровно:
+        <input type="number" name="new_price" value="{{ new_price }}">
+        <button type="submit">Поиск</button>
+    </form>
+
+    {% if new_date and new_price %}
+        {% if combinate_result %}
+            <table border="1px">
+                <tr>
+                    <td>Рейс</td>
+                </tr>
+                {% for i in combinate_result %}
+                <tr>
+                    <td>{{ i.fly_city }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
